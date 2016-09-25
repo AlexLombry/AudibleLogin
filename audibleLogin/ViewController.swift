@@ -22,7 +22,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         let coll = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
-        coll.backgroundColor = .red
+        coll.backgroundColor = .white
         coll.dataSource = self
         coll.delegate = self
         coll.isPagingEnabled = true
