@@ -19,12 +19,33 @@ class PageCell: UICollectionViewCell {
             imageView.image = UIImage(named: page.imageName)
             
             let color = UIColor(white: 0.2, alpha: 1)
+            
+            // set title and message text and format them
             let attributedText = NSMutableAttributedString(
                 string: page.title,
                 attributes: [
                     NSFontAttributeName: UIFont.systemFont(ofSize: 20, weight: UIFontWeightMedium),
                     NSForegroundColorAttributeName: color
+                ]
+            )
+            
+            attributedText.append(
+                NSAttributedString(string: "\n\n\(page.message)",
+                attributes: [
+                    NSFontAttributeName: UIFont.systemFont(ofSize: 14, weight: UIFontWeightMedium),
+                    NSForegroundColorAttributeName: color
                 ])
+            )
+            
+            // place the current paragraph to the center
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let length = attributedText.string.characters.count
+            attributedText.addAttribute(
+                NSParagraphStyleAttributeName,
+                value: paragraphStyle,
+                range: NSRange(location: 0, length: length)
+            )
             
             textView.attributedText = attributedText
             //textView.text = page.title + "\n\n" + page.message
@@ -56,6 +77,10 @@ class PageCell: UICollectionViewCell {
         tv.text = "Sample for now"
         tv.isEditable = false
         
+        // Padding
+        tv.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        
+        
         return tv
     }()
     
@@ -71,13 +96,16 @@ class PageCell: UICollectionViewCell {
             right: rightAnchor
         )
         
-        textView.anchorToTop(
+        textView.anchorWithConstantsToTop(
             top: nil,
             left: leftAnchor,
             bottom: bottomAnchor,
-            right: rightAnchor
+            right: rightAnchor,
+            topConstant: 0,
+            leftConstant: 16,
+            bottomConstant: 0,
+            rightConstant: 16
         )
-        
         
         textView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3).isActive = true
         
