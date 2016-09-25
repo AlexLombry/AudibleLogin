@@ -15,6 +15,7 @@ class PageCell: UICollectionViewCell {
         setupViews()
     }
     
+    // Create view layout
     let imageView: UIImageView = {
         let iv = UIImageView()
         
@@ -26,6 +27,7 @@ class PageCell: UICollectionViewCell {
         return iv
     }()
     
+    // Create text view layout
     let textView: UITextView = {
         let tv = UITextView()
         
