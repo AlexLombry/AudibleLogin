@@ -26,7 +26,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         )
         
         
-        return []
+        let thirdPage = Page(
+            title: "Send from the player",
+            message: "Tap the More menu in the upper corner. Choose \"Send this Book\".",
+            imageName: "page3"
+        )
+        
+        
+        return [firstPage, secondPage, thirdPage]
     }()
     
     // Creation d'une collection view en code et non en storyboard
@@ -66,7 +73,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellFirst, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellFirst, for: indexPath) as! PageCell
+        let page = pages[indexPath.item]
+        
+        cell.page = page
         
         return cell
     }

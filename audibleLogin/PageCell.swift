@@ -10,6 +10,28 @@ import UIKit
 
 class PageCell: UICollectionViewCell {
     
+    var page: Page? {
+        didSet {
+            guard let page = page else {
+                return
+            }
+            
+            imageView.image = UIImage(named: page.imageName)
+            
+            let color = UIColor(white: 0.2, alpha: 1)
+            let attributedText = NSMutableAttributedString(
+                string: page.title,
+                attributes: [
+                    NSFontAttributeName: UIFont.systemFont(ofSize: 20, weight: UIFontWeightMedium),
+                    NSForegroundColorAttributeName: color
+                ])
+            
+            textView.attributedText = attributedText
+            //textView.text = page.title + "\n\n" + page.message
+            
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
