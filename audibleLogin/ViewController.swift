@@ -11,7 +11,8 @@ import UIKit
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let cellFirst = "first"
-
+    let loginCellId = "loginCellId"
+    
     let pages: [Page] = {
         let firstPage = Page(
             title: "Share a great listen",
@@ -138,10 +139,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             right: view.rightAnchor
         )
         
-        collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellFirst)
+        registerCells()
     }
 
+    fileprivate func registerCells() {
+        collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellFirst)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: loginCellId)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // Avoid crashes for pages.count + 1
+        // needed for login page
+        if indexPath.item == pages.count {
+            let loginCell = collectionView.dequeueReusableCell(withReuseIdentifier: loginCellId, for: indexPath)
+            
+            return loginCell
+        }
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellFirst, for: indexPath) as! PageCell
         let page = pages[indexPath.item]
         
@@ -151,7 +165,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pages.count
+        return pages.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
