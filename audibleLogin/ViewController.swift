@@ -84,6 +84,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return coll
     }()
     
+    
+    var pageControlBottomAnchor: NSLayoutConstraint?
+    var skipButtonTopAnchor: NSLayoutConstraint?
+    var nextButtonTopAnchor: NSLayoutConstraint?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -93,7 +99,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.addSubview(nextButton)
         
         // do not use the return from anchor method.
-        _ = pageControl.anchor(
+        pageControlBottomAnchor = pageControl.anchor(
             nil,
             left: view.leftAnchor,
             bottom: view.bottomAnchor,
@@ -104,9 +110,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             rightConstant: 0,
             widthConstant: 0,
             heightConstant: 40
-        )
+        )[1]
         
-        _ = skipButton.anchor(
+        skipButtonTopAnchor = skipButton.anchor(
             view.topAnchor,
             left: view.leftAnchor,
             bottom: nil,
@@ -117,9 +123,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             rightConstant: 0,
             widthConstant: 60,
             heightConstant: 50
-        )
+        ).first
         
-        _ = nextButton.anchor(
+        nextButtonTopAnchor = nextButton.anchor(
             view.topAnchor,
             left: nil,
             bottom: nil,
@@ -130,7 +136,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             rightConstant: 5,
             widthConstant: 60,
             heightConstant: 50
-        )
+        ).first
 
         // place the collection view
         collectionView.anchorToTop(
@@ -145,9 +151,25 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     // use this to know with pagination where we are
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let pageNumber = targetContentOffset.pointee.x / view.frame.width
+        let pageNumber = Int(targetContentOffset.pointee.x / view.frame.width)
         
-        pageControl.currentPage = Int(pageNumber)
+        pageControl.currentPage = pageNumber
+        
+        // on the last page
+        if pageNumber == pages.count {
+            pageControlBottomAnchor?.constant = 40
+            skipButtonTopAnchor?.constant = -40
+            nextButtonTopAnchor?.constant = -40
+        } else {
+            // back to other page (not login one)
+            pageControlBottomAnchor?.constant = 0
+            skipButtonTopAnchor?.constant = 16
+            nextButtonTopAnchor?.constant = 16
+        }
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+            }, completion: nil)
     }
     
     
