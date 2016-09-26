@@ -36,6 +36,35 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return [firstPage, secondPage, thirdPage]
     }()
     
+    let pageControl: UIPageControl = {
+        let pc = UIPageControl()
+        
+        pc.numberOfPages = 3
+        pc.pageIndicatorTintColor = .lightGray
+        pc.currentPageIndicatorTintColor = orangeButtonColor
+        
+        return pc
+    }()
+    
+    let skipButton: UIButton = {
+        let btn = UIButton(type: .system)
+        
+        btn.setTitle("Skip", for: .normal)
+        btn.setTitleColor(orangeButtonColor, for: .normal)
+        
+        return btn
+    }()
+    
+    let nextButton: UIButton = {
+        let btn = UIButton(type: .system)
+        
+        btn.setTitle("Next", for: .normal)
+        btn.setTitleColor(orangeButtonColor, for: .normal)
+        
+        return btn
+    }()
+    
+    
     // Creation d'une collection view en code et non en storyboard
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -57,10 +86,53 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         super.viewDidLoad()
         
         view.addSubview(collectionView)
+        view.addSubview(pageControl)
+        view.addSubview(skipButton)
+        view.addSubview(nextButton)
+        
+        // do not use the return from anchor method.
+        _ = pageControl.anchor(
+            nil,
+            left: view.leftAnchor,
+            bottom: view.bottomAnchor,
+            right: view.rightAnchor,
+            topConstant: 0,
+            leftConstant: 0,
+            bottomConstant: 0,
+            rightConstant: 0,
+            widthConstant: 0,
+            heightConstant: 40
+        )
+        
+        _ = skipButton.anchor(
+            view.topAnchor,
+            left: view.leftAnchor,
+            bottom: nil,
+            right: nil,
+            topConstant: 16,
+            leftConstant: 5,
+            bottomConstant: 0,
+            rightConstant: 0,
+            widthConstant: 60,
+            heightConstant: 50
+        )
+        
+        _ = nextButton.anchor(
+            view.topAnchor,
+            left: nil,
+            bottom: nil,
+            right: view.rightAnchor,
+            topConstant: 16,
+            leftConstant: 0,
+            bottomConstant: 0,
+            rightConstant: 5,
+            widthConstant: 60,
+            heightConstant: 50
+        )
         
         // place the collection view
         collectionView.anchorToTop(
-            top: view.topAnchor,
+            view.topAnchor,
             left: view.leftAnchor,
             bottom: view.bottomAnchor,
             right: view.rightAnchor

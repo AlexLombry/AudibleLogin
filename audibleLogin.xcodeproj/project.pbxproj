@@ -314,6 +314,7 @@
 				FA29DF711D984EF90079D9BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

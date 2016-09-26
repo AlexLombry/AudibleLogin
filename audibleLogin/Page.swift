@@ -13,3 +13,4 @@ struct Page {
     let message: String
     let imageName: String
 }
+
