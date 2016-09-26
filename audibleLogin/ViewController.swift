@@ -37,10 +37,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return [firstPage, secondPage, thirdPage]
     }()
     
-    let pageControl: UIPageControl = {
+    // lazy var to use self. (impossible with a let in this case)
+    lazy var pageControl: UIPageControl = {
         let pc = UIPageControl()
         
-        pc.numberOfPages = 3
+        pc.numberOfPages = self.pages.count + 1
         pc.pageIndicatorTintColor = .lightGray
         pc.currentPageIndicatorTintColor = orangeButtonColor
         
@@ -130,7 +131,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             widthConstant: 60,
             heightConstant: 50
         )
-        
+
         // place the collection view
         collectionView.anchorToTop(
             view.topAnchor,
@@ -142,6 +143,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         registerCells()
     }
 
+    // use this to know with pagination where we are
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let pageNumber = targetContentOffset.pointee.x / view.frame.width
+        
+        pageControl.currentPage = Int(pageNumber)
+    }
+    
+    
     fileprivate func registerCells() {
         collectionView.register(PageCell.self, forCellWithReuseIdentifier: cellFirst)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: loginCellId)
