@@ -13,6 +13,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     let cellFirst = "first"
     let loginCellId = "loginCellId"
     
+    // each page
     let pages: [Page] = {
         let firstPage = Page(
             title: "Share a great listen",
@@ -48,24 +49,55 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return pc
     }()
     
-    let skipButton: UIButton = {
+    lazy var skipButton: UIButton = {
         let btn = UIButton(type: .system)
         
         btn.setTitle("Skip", for: .normal)
         btn.setTitleColor(orangeButtonColor, for: .normal)
+        btn.addTarget(self, action: #selector(skip), for: .touchUpInside)
         
         return btn
     }()
     
-    let nextButton: UIButton = {
+    lazy var nextButton: UIButton = {
         let btn = UIButton(type: .system)
         
         btn.setTitle("Next", for: .normal)
         btn.setTitleColor(orangeButtonColor, for: .normal)
+        btn.addTarget(self, action: #selector(nextPage), for: .touchUpInside)
         
         return btn
     }()
     
+    // go to the next page
+    func nextPage() {
+        // we are on the last page
+        if pageControl.currentPage == pages.count {
+            return
+        }
+        
+        // second last page
+        if pageControl.currentPage == pages.count - 1 {
+            moveControlConstraintsOfScreen()
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+                }, completion: nil)
+            
+        }
+        
+        // get the current indexpath
+        let indexPath = IndexPath(item: pageControl.currentPage + 1, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+        pageControl.currentPage += 1
+    }
+    
+    // skip all page
+    func skip() {
+        pageControl.currentPage = pages.count - 1
+        nextPage()
+    }
     
     // Creation d'une collection view en code et non en storyboard
     lazy var collectionView: UICollectionView = {
@@ -180,19 +212,28 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         // on the last page
         if pageNumber == pages.count {
-            pageControlBottomAnchor?.constant = 40
-            skipButtonTopAnchor?.constant = -40
-            nextButtonTopAnchor?.constant = -40
+            moveControlConstraintsOfScreen()
         } else {
             // back to other page (not login one)
-            pageControlBottomAnchor?.constant = 0
-            skipButtonTopAnchor?.constant = 16
-            nextButtonTopAnchor?.constant = 16
+            restoreControlConstraintsOfScreen()
         }
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
             }, completion: nil)
+    }
+    
+    /// MARK: Move all control constraint
+    fileprivate func moveControlConstraintsOfScreen() {
+        pageControlBottomAnchor?.constant = 40
+        skipButtonTopAnchor?.constant = -40
+        nextButtonTopAnchor?.constant = -40
+    }
+    
+    fileprivate func restoreControlConstraintsOfScreen() {
+        pageControlBottomAnchor?.constant = 0
+        skipButtonTopAnchor?.constant = 16
+        nextButtonTopAnchor?.constant = 16
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
