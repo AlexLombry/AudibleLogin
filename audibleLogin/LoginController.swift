@@ -8,7 +8,12 @@
 
 import UIKit
 
-class LoginController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+// class because of weak var delegate on login cell
+protocol LoginControllerDelegate: class {
+    func finishLoggingIn()
+}
+
+class LoginController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, LoginControllerDelegate {
     
     let cellFirst = "first"
     let loginCellId = "loginCellId"
@@ -248,9 +253,11 @@ class LoginController: UIViewController, UICollectionViewDataSource, UICollectio
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Avoid crashes for pages.count + 1
         // needed for login page
+        // render login page cell
         if indexPath.item == pages.count {
-            let loginCell = collectionView.dequeueReusableCell(withReuseIdentifier: loginCellId, for: indexPath)
-            
+            let loginCell = collectionView.dequeueReusableCell(withReuseIdentifier: loginCellId, for: indexPath) as! LoginCell
+        
+            loginCell.delegate = self
             return loginCell
         }
         
@@ -260,6 +267,15 @@ class LoginController: UIViewController, UICollectionViewDataSource, UICollectio
         cell.page = page
         
         return cell
+    }
+    
+    func finishLoggingIn() {
+        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        
+        guard let mainNavigationController = rootViewController as? MainNavigationController else { return }
+        mainNavigationController.viewControllers = [HomeController()]
+        
+        dismiss(animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
